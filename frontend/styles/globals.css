@@ -1,0 +1,787 @@
+/* Base Styles */
+:root {
+    --primary: #00ff41;
+    --primary-dark: #00cc33;
+    --secondary: #00ffff;
+    --accent: #ff0066;
+    --dark: #0a0a0a;
+    --darker: #000000;
+    --light: #ffffff;
+    --success: #00ff41;
+    --danger: #ff1744;
+    --warning: #ff9100;
+    --matrix-green: #00ff41;
+    --matrix-cyan: #00ffff;
+    --matrix-pink: #ff0066;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background-color: var(--darker);
+    color: var(--matrix-green);
+    overflow-x: hidden;
+    position: relative;
+    line-height: 1.6;
+}
+
+/* Matrix Background Effect */
+.matrix-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 255, 65, 0.1) 100%);
+    z-index: -2;
+}
+
+.matrix-rain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(90deg, transparent 98%, var(--matrix-green) 100%),
+        linear-gradient(180deg, transparent 98%, var(--matrix-green) 100%);
+    background-size: 50px 50px, 50px 50px;
+    animation: matrixRain 20s linear infinite;
+    opacity: 0.1;
+    z-index: -1;
+}
+
+@keyframes matrixRain {
+    0% {
+        transform: translateY(-100%);
+    }
+    100% {
+        transform: translateY(100%);
+    }
+}
+
+/* Header Styles */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: rgba(0, 0, 0, 0.9);
+    border-bottom: 2px solid var(--matrix-green);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+    position: relative;
+    z-index: 10;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo h1 {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 1.8rem;
+    color: var(--matrix-green);
+    text-shadow: 0 0 10px var(--matrix-green);
+    letter-spacing: 2px;
+}
+
+.logo h1 span {
+    color: var(--matrix-cyan);
+    text-shadow: 0 0 10px var(--matrix-cyan);
+}
+
+.nav-tabs {
+    display: flex;
+    gap: 1rem;
+}
+
+.tab-btn {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--matrix-green);
+    color: var(--matrix-green);
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.tab-btn:hover {
+    background: var(--matrix-green);
+    color: var(--darker);
+    box-shadow: 0 0 15px var(--matrix-green);
+}
+
+.tab-btn.active {
+    background: var(--matrix-green);
+    color: var(--darker);
+    box-shadow: 0 0 15px var(--matrix-green);
+}
+
+/* Main Container */
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    min-height: 70vh;
+}
+
+/* Scanner Section */
+.scanner-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.scanner-box {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid var(--matrix-green);
+    border-radius: 5px;
+    padding: 1.5rem;
+    box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+    transition: all 0.3s ease;
+}
+
+.scanner-box:hover {
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.5);
+    transform: translateY(-2px);
+}
+
+.scanner-lights {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.light {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--darker);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.light.red {
+    background-color: var(--danger);
+    animation: blink 2s infinite;
+}
+
+.light.yellow {
+    background-color: var(--warning);
+    animation: blink 2s infinite 0.5s;
+}
+
+.light.green {
+    background-color: var(--success);
+    animation: blink 2s infinite 1s;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 10px currentColor;
+    }
+}
+
+.scanner-display {
+    position: relative;
+    width: 100%;
+    height: 300px; /* Reduced from 300px */
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 2px dashed var(--matrix-green);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.scanner-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 255, 65, 0.1) 0%,
+        rgba(0, 255, 255, 0.1) 50%,
+        rgba(0, 255, 65, 0.1) 100%
+    );
+    z-index: 1;
+}
+
+.file-preview {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: rgba(0, 255, 65, 0.7);
+    font-size: 1.1rem;
+    z-index: 2;
+}
+
+.file-preview i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: rgba(0, 255, 65, 0.5);
+}
+
+.file-preview img, .file-preview video, .file-preview audio {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: none;
+    z-index: 3;
+    position: relative;
+}
+
+.scanner-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(0, 255, 255, 0.2) 50%,
+        transparent 100%
+    );
+    animation: scan 3s infinite;
+    opacity: 0;
+    display: none;
+}
+
+@keyframes scan {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+.scanner-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.cyber-btn {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, var(--matrix-green), var(--primary-dark));
+    border: none;
+    border-radius: 3px;
+    color: var(--darker);
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 255, 65, 0.3);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+}
+
+.cyber-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: all 0.5s ease;
+}
+
+.cyber-btn:hover::before {
+    left: 100%;
+}
+
+.cyber-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 255, 65, 0.5);
+}
+
+.cyber-btn:active {
+    transform: translateY(1px);
+}
+
+.cyber-btn i {
+    font-size: 1rem;
+}
+
+.analyze-btn {
+    background: linear-gradient(135deg, var(--matrix-cyan), #00b4a0);
+}
+
+.analyze-btn:disabled {
+    background: linear-gradient(135deg, #555, #333);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Results Section */
+.results-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.results-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+.result-card {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--matrix-green);
+    border-radius: 5px;
+    padding: 1.5rem;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.result-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 255, 65, 0.1) 0%,
+        rgba(0, 255, 255, 0.1) 50%,
+        rgba(0, 255, 65, 0.1) 100%
+    );
+    z-index: -1;
+}
+
+.result-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 25px rgba(0, 255, 65, 0.4);
+}
+
+.card-title {
+    font-family: 'Courier New', monospace;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: var(--matrix-cyan);
+    text-shadow: 0 0 5px var(--matrix-cyan);
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+    padding-bottom: 0.5rem;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-label {
+    font-weight: normal;
+    color: rgba(0, 255, 65, 0.8);
+}
+
+.info-value {
+    font-weight: bold;
+    color: var(--matrix-green);
+}
+
+.progress-bar {
+    flex-grow: 1;
+    height: 8px;
+    background-color: rgba(0, 255, 65, 0.2);
+    border-radius: 3px;
+    margin: 0 1rem;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--matrix-green), var(--matrix-cyan));
+    transition: width 1s ease;
+}
+
+.verdict-badge {
+    padding: 0.3rem 0.8rem;
+    border-radius: 3px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+.verdict-badge.ai {
+    background-color: rgba(255, 23, 68, 0.2);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+
+.verdict-badge.human {
+    background-color: rgba(0, 255, 65, 0.2);
+    color: var(--success);
+    border: 1px solid var(--success);
+}
+
+.verdict-badge.uncertain {
+    background-color: rgba(255, 145, 0, 0.2);
+    color: var(--warning);
+    border: 1px solid var(--warning);
+}
+
+/* Text Input Styles */
+.text-input {
+    width: 100%;
+    min-height: 200px; /* Reduced from 200px */
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid var(--matrix-green);
+    border-radius: 5px;
+    color: var(--matrix-green);
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    padding: 1rem;
+    resize: vertical;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.text-input:focus {
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+    border-color: var(--matrix-cyan);
+}
+
+/* File Upload Styles */
+.file-upload {
+    position: relative;
+    width: 100%;
+    height: 120px; /* Reduced from 200px */
+    border: 2px dashed var(--matrix-green);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.8);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-upload:hover {
+    border-color: var(--matrix-cyan);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+}
+
+.file-upload input[type="file"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.file-upload-text {
+    color: var(--matrix-green);
+    font-size: 0.9rem; /* Reduced from 1.1rem */
+    text-align: center;
+    pointer-events: none;
+}
+
+.file-upload-text i {
+    font-size: 2rem; /* Reduced from 3rem */
+    margin-bottom: 0.5rem; /* Reduced from 1rem */
+    color: rgba(0, 255, 65, 0.5);
+}
+
+/* Notification */
+.notification {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid var(--matrix-green);
+    border-radius: 3px;
+    padding: 1rem 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    transition: all 0.5s ease;
+}
+
+.notification.show {
+    bottom: 30px;
+}
+
+.notification-message {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 1px;
+    color: var(--matrix-green);
+}
+
+/* Loading Animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 255, 65, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--matrix-green);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+        padding: 0 1rem;
+    }
+    
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+    
+    .nav-tabs {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .scanner-controls {
+        flex-direction: column;
+    }
+    
+    .cyber-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* Glitch Effect */
+.glitch {
+    position: relative;
+}
+
+.glitch::before,
+.glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch::before {
+    animation: glitch-1 0.5s infinite;
+    color: var(--matrix-pink);
+    z-index: -1;
+}
+
+.glitch::after {
+    animation: glitch-2 0.5s infinite;
+    color: var(--matrix-cyan);
+    z-index: -2;
+}
+
+@keyframes glitch-1 {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-2 {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(2px, -2px); }
+    40% { transform: translate(2px, 2px); }
+    60% { transform: translate(-2px, -2px); }
+    80% { transform: translate(-2px, 2px); }
+} 
+
+/* --- Matrix Code Rain Overlay --- */
+.matrix-code-rain {
+  pointer-events: none;
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: 0;
+  opacity: 0.18;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 2px, var(--matrix-green) 3px, transparent 4px, transparent 20px
+  );
+  animation: codeRainMove 2s linear infinite;
+}
+@keyframes codeRainMove {
+  0% { background-position-y: 0; }
+  100% { background-position-y: 20px; }
+}
+
+/* --- Neon Glow for Scanner and Buttons --- */
+.scanner-box, .cyber-btn, .file-upload {
+  box-shadow: 0 0 16px 2px var(--matrix-green), 0 0 32px 4px var(--matrix-cyan);
+}
+
+/* --- Remove neon glow from scanner-box and file-upload, keep for .cyber-btn only --- */
+.scanner-box, .file-upload {
+  box-shadow: none !important;
+}
+
+.cyber-btn {
+  /* Keep the neon glow for buttons */
+  box-shadow: 0 0 16px 2px var(--matrix-green), 0 0 32px 4px var(--matrix-cyan);
+}
+
+/* --- Analyze Button: Light Text Color --- */
+.analyze-btn {
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--matrix-cyan), #00b4a0);
+}
+
+/* --- Flicker Animation for Scanner Display --- */
+.scanner-display {
+  animation: flicker 2.5s infinite alternate;
+}
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  48% { opacity: 0.97; }
+  49% { opacity: 0.92; }
+  50% { opacity: 0.99; }
+  51% { opacity: 0.95; }
+  52% { opacity: 1; }
+}
+
+/* --- 3D Tab Buttons --- */
+.tab-btn {
+  box-shadow: 0 2px 0 var(--matrix-green), 0 4px 10px rgba(0,255,65,0.15);
+  border-bottom: 3px solid var(--matrix-cyan);
+  background: linear-gradient(180deg, rgba(0,255,65,0.12) 0%, rgba(0,0,0,0.7) 100%);
+}
+.tab-btn:active {
+  box-shadow: 0 1px 0 var(--matrix-green), 0 2px 5px rgba(0,255,65,0.10);
+  border-bottom: 1px solid var(--matrix-cyan);
+}
+
+/* --- Pulsing Border for File Upload --- */
+.file-upload {
+  animation: pulseBorder 2s infinite;
+}
+@keyframes pulseBorder {
+  0% { box-shadow: 0 0 0 0 var(--matrix-cyan); }
+  70% { box-shadow: 0 0 12px 4px var(--matrix-cyan); }
+  100% { box-shadow: 0 0 0 0 var(--matrix-cyan); }
+}
+
+/* --- Enhanced Glitch for Result Titles --- */
+.card-title.glitch {
+  position: relative;
+  color: var(--matrix-cyan);
+  text-shadow: 0 0 8px var(--matrix-cyan), 0 0 2px var(--matrix-green);
+  animation: glitch-1 0.7s infinite;
+}
+.card-title.glitch::before, .card-title.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0; top: 0; width: 100%; height: 100%;
+  opacity: 0.7;
+}
+.card-title.glitch::before {
+  color: var(--matrix-green);
+  z-index: -1;
+  animation: glitch-1 0.7s infinite;
+}
+.card-title.glitch::after {
+  color: var(--matrix-pink);
+  z-index: -2;
+  animation: glitch-2 0.7s infinite;
+}
+
+/* --- Scanline Overlay for Whole App --- */
+.scanline-overlay {
+  pointer-events: none;
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: 9999;
+  opacity: 0.08;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0,255,65,0.08) 0px, rgba(0,255,65,0.08) 1px, transparent 2px, transparent 6px
+  );
+} 
+
+/* --- Remove neon glow from analyze button --- */
+.cyber-btn, .analyze-btn {
+  box-shadow: none !important;
+}
+
+/* --- Add strong neon glow to the big box (scanner-box) --- */
+.scanner-box {
+  box-shadow: 0 0 32px 8px var(--matrix-green), 0 0 64px 16px var(--matrix-cyan);
+} 
