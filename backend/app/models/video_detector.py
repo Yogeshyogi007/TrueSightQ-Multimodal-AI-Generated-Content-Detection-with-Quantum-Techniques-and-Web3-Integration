@@ -33,7 +33,7 @@ class VideoAIDetector:
         """Classical ensemble voting without quantum enhancement"""
         h_label, h_conf = heuristic_result
         p_label, p_conf = pytorch_result
-        
+            
         # If PyTorch model is available and very confident, trust it
         if p_conf > 0.75:  # Increased threshold from 0.6 - requires higher confidence
             return p_label, p_conf

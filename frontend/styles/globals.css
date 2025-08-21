@@ -785,3 +785,159 @@ body {
 .scanner-box {
   box-shadow: 0 0 32px 8px var(--matrix-green), 0 0 64px 16px var(--matrix-cyan);
 } 
+
+/* =============================
+   Publication-grade Enhancements
+   (Typography, Layout, Utilities)
+   ============================= */
+
+/* Typography scale for headings and copy that renders well in screenshots */
+:root {
+	--font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+	--font-mono: 'Courier New', monospace;
+	--text-xs: 0.8125rem; /* 13px */
+	--text-sm: 0.9375rem; /* 15px */
+	--text-base: 1rem; /* 16px */
+	--text-lg: 1.125rem; /* 18px */
+	--text-xl: 1.25rem; /* 20px */
+	--text-2xl: 1.5rem; /* 24px */
+	--text-3xl: 1.875rem; /* 30px */
+	--text-4xl: 2.25rem; /* 36px */
+	--shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.35);
+	--ring: 0 0 0 2px rgba(0, 255, 200, 0.25), 0 0 0 6px rgba(0, 255, 65, 0.15);
+}
+
+/* Improve base legibility without losing the Matrix vibe */
+body {
+	font-family: var(--font-sans);
+	font-feature-settings: "cv11", "ss01";
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+code, pre, .mono {
+	font-family: var(--font-mono);
+}
+
+/* Hero section for page title and description (good for screenshots) */
+.hero {
+	max-width: 1200px;
+	margin: 2.5rem auto 1rem;
+	padding: 0 2rem;
+}
+.hero-title {
+	font-family: var(--font-mono);
+	font-size: var(--text-3xl);
+	letter-spacing: 1px;
+	color: var(--matrix-cyan);
+	text-shadow: 0 0 10px rgba(0,255,255,0.35);
+}
+.hero-subtitle {
+	margin-top: 0.5rem;
+	max-width: 70ch;
+	color: rgba(255,255,255,0.75);
+	font-size: var(--text-lg);
+}
+
+/* Refined container widths for composition */
+.container--narrow {
+	max-width: 960px;
+}
+.container--wide {
+	max-width: 1440px;
+}
+
+/* Paper-style cards: improved contrast and spacing for print-quality screenshots */
+.paper-card {
+	background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.7) 100%);
+	border: 1px solid rgba(0,255,130,0.25);
+	border-radius: 8px;
+	box-shadow: var(--shadow-soft);
+	padding: 1.25rem 1.5rem;
+}
+.paper-card + .paper-card {
+	margin-top: 1rem;
+}
+.paper-card .card-title {
+	font-size: var(--text-xl);
+	text-shadow: 0 0 6px rgba(0,255,255,0.35);
+}
+
+/* Input system: consistent, screenshot-friendly */
+.input,
+.select,
+.textarea {
+	width: 100%;
+	background: rgba(0,0,0,0.8);
+	border: 1.5px solid rgba(0,255,130,0.35);
+	border-radius: 6px;
+	color: var(--matrix-green);
+	padding: 0.75rem 0.875rem;
+	font-size: var(--text-base);
+	outline: none;
+	transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.input:focus,
+.select:focus,
+.textarea:focus {
+	border-color: var(--matrix-cyan);
+	box-shadow: var(--ring);
+}
+
+/* Button system variants */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1.25rem;
+	border-radius: 6px;
+	border: 1px solid rgba(0,255,130,0.35);
+	background: linear-gradient(135deg, rgba(0,255,65,0.2), rgba(0,255,255,0.15));
+	color: #eafff6;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	font-weight: 700;
+	cursor: pointer;
+	box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(0,0,0,0.5); }
+.btn:active { transform: translateY(0); }
+.btn--primary { background: linear-gradient(135deg, var(--matrix-cyan), #00b4a0); border-color: rgba(0,255,255,0.35); }
+.btn--danger { background: linear-gradient(135deg, #ff477e, #ff1744); border-color: rgba(255,71,126,0.5); }
+.btn--outline { background: transparent; border-color: var(--matrix-cyan); color: var(--matrix-cyan); }
+
+/* Simple grid helpers for composition */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 1024px) { .grid-3 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+/* Elevation utilities */
+.elevation-1 { box-shadow: 0 6px 18px rgba(0,0,0,0.35); }
+.elevation-2 { box-shadow: 0 12px 30px rgba(0,0,0,0.45); }
+.elevation-3 { box-shadow: 0 20px 45px rgba(0,0,0,0.55); }
+
+/* Badges suitable for legend/labels in screenshots */
+.badge { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.25rem 0.5rem; border-radius: 999px; font-size: var(--text-sm); border: 1px solid rgba(255,255,255,0.2); }
+.badge--ai { background: rgba(255, 23, 68, 0.18); color: #ffc1cf; border-color: rgba(255,23,68,0.35); }
+.badge--real { background: rgba(0, 255, 65, 0.18); color: #d6ffe3; border-color: rgba(0,255,130,0.35); }
+.badge--uncertain { background: rgba(255, 145, 0, 0.18); color: #ffe3bf; border-color: rgba(255,145,0,0.35); }
+
+/* Progress ring style variant for confidence visuals */
+.confidence-ring { width: 64px; height: 64px; border-radius: 50%; background: conic-gradient(var(--matrix-cyan) var(--pct, 0%), rgba(255,255,255,0.08) 0); position: relative; }
+.confidence-ring::after { content: attr(data-label); position: absolute; inset: 6px; background: rgba(0,0,0,0.85); border-radius: 50%; display: grid; place-items: center; color: var(--matrix-green); font-weight: 700; font-size: var(--text-sm); }
+
+/* Print improvements for IEEE screenshots */
+@media print {
+	body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+	.header, .matrix-bg, .matrix-rain, .matrix-code-rain, .scanline-overlay { display: none !important; }
+	.container { max-width: 1024px; margin: 0 auto; }
+	.paper-card, .result-card, .scanner-box { box-shadow: none; border-color: rgba(0,0,0,0.25); }
+	.card-title, .hero-title { text-shadow: none; color: #111 !important; }
+}
+
+/* Respect reduced motion preferences to avoid distracting animations in screenshots/demos */
+@media (prefers-reduced-motion: reduce) {
+	* { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}

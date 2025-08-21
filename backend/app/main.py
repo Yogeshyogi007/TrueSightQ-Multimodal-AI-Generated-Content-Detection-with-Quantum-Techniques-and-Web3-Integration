@@ -43,6 +43,7 @@ MODEL_PATH = os.path.join(os.path.dirname(__file__), '../../face_detector.pth')
 CLASS_IDX_PATH = os.path.join(os.path.dirname(__file__), '../../class_to_idx.json')
 if os.path.exists(MODEL_PATH):
     model = models.resnet18(weights=None)
+    # Use the same architecture as the trained model (simple Linear layer)
     model.fc = torch.nn.Linear(model.fc.in_features, 2)
     model.load_state_dict(torch.load(MODEL_PATH, map_location='cpu'))
     model.eval()
