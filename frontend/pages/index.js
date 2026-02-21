@@ -2,6 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 
 const TABS = ["Text", "Image", "Audio", "Video"];
+const MIN_TEXT_WORDS = 30; // Minimum words required for reliable text analysis
 
 export default function Home() {
   const [tab, setTab] = useState("Text");
@@ -10,9 +11,20 @@ export default function Home() {
   const [file, setFile] = useState(null);
   const [text, setText] = useState("");
   const [scanning, setScanning] = useState(false);
+  const [textWarning, setTextWarning] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setTextWarning(null);
+
+    if (tab === "Text") {
+      const words = text.trim().split(/\s+/).filter(Boolean);
+      if (words.length < MIN_TEXT_WORDS) {
+        setTextWarning(`Please enter at least ${MIN_TEXT_WORDS} words for accurate analysis. (Currently: ${words.length} words)`);
+        return;
+      }
+    }
+
     setLoading(true);
     setResult(null);
     setScanning(true);
@@ -113,7 +125,7 @@ export default function Home() {
           <button
             key={t}
               className={`tab-btn ${tab === t ? 'active' : ''}`}
-              onClick={() => { setTab(t); setResult(null); setFile(null); setText(""); }}
+              onClick={() => { setTab(t); setResult(null); setFile(null); setText(""); setTextWarning(null); }}
           >
             {t}
           </button>
@@ -164,11 +176,16 @@ export default function Home() {
                 <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                   <textarea
                     className="text-input"
-                    placeholder="ENTER TEXT TO ANALYZE..."
+                    placeholder="ENTER TEXT TO ANALYZE... (minimum 30 words for accurate results)"
                     value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={(e) => { setText(e.target.value); setTextWarning(null); }}
                     required
                   />
+                  {textWarning && (
+                    <div className="text-warning" role="alert">
+                      {textWarning}
+                    </div>
+                  )}
                   <button 
                     type="submit" 
                     className="cyber-btn analyze-btn" 
@@ -256,9 +273,9 @@ export default function Home() {
       </div>
 
       {/* Notification */}
-      <div className={`notification ${result ? 'show' : ''}`}>
+      <div className={`notification ${result ? 'show' : ''} ${textWarning ? 'show warning' : ''}`}>
         <div className="notification-message">
-          ANALYSIS COMPLETE
+          {textWarning ? textWarning : result ? 'ANALYSIS COMPLETE' : ''}
         </div>
       </div>
     </>

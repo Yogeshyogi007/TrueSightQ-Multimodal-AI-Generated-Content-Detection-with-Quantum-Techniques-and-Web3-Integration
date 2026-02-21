@@ -115,7 +115,7 @@ def retrain_model():
     
     # Create model with simpler architecture to prevent overfitting
     model = models.resnet18(weights=None)
-    model.fc = nn.Sequential(
+    model.npm run dev = nn.Sequential(
         nn.Dropout(0.3),  # Reduced dropout
         nn.Linear(model.fc.in_features, 256),
         nn.ReLU(),
