@@ -61,6 +61,7 @@ export default function App({ Component, pageProps }) {
       <button
         onClick={toggleTheme}
         aria-label="Toggle theme"
+        title={theme === 'dark' ? '' : 'just a fancy name for dark theme'}
         style={{
           position: 'fixed',
           bottom: 16,
@@ -69,13 +70,16 @@ export default function App({ Component, pageProps }) {
           padding: '10px 12px',
           borderRadius: 9999,
           border: '1px solid rgba(0,0,0,0.08)',
-          background: theme === 'dark' ? 'linear-gradient(135deg,#00ff41,#00cccc)' : 'linear-gradient(135deg,#1565C0,#00838F)',
+          // Swapped colors: green for light (Matrix mode), blue for dark
+          background: theme === 'dark'
+            ? 'linear-gradient(135deg,#1565C0,#00838F)'  // dark theme active → blue button (to go back to light)
+            : 'linear-gradient(135deg,#00ff41,#00cccc)', // light theme active → green Matrix button
           color: '#fff',
           boxShadow: '0 6px 18px rgba(0,0,0,0.25)',
           cursor: 'pointer'
         }}
       >
-        {theme === 'dark' ? 'Light Theme' : 'Dark Theme'}
+        {theme === 'dark' ? 'Light Theme' : 'Matrix Mode'}
       </button>
       <Component {...pageProps} />
     </>
