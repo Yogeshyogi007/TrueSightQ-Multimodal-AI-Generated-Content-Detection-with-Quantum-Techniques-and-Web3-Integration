@@ -12,6 +12,8 @@ export default function Home() {
   const [text, setText] = useState("");
   const [scanning, setScanning] = useState(false);
   const [textWarning, setTextWarning] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewType, setPreviewType] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,36 +58,16 @@ export default function Home() {
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
-    
-    // Show preview
+
     if (selectedFile) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const preview = document.querySelector('.file-preview');
-        if (preview) {
-          preview.innerHTML = '';
-          
-          if (tab === "Image") {
-            const img = document.createElement('img');
-            img.src = e.target.result;
-            img.style.display = 'block';
-            preview.appendChild(img);
-          } else if (tab === "Video") {
-            const video = document.createElement('video');
-            video.src = e.target.result;
-            video.controls = true;
-            video.style.display = 'block';
-            preview.appendChild(video);
-          } else if (tab === "Audio") {
-            const audio = document.createElement('audio');
-            audio.src = e.target.result;
-            audio.controls = true;
-            audio.style.display = 'block';
-            preview.appendChild(audio);
-          }
-        }
-      };
-      reader.readAsDataURL(selectedFile);
+      // Use a blob URL for preview and track the modality
+      const url = URL.createObjectURL(selectedFile);
+      const type = tab.toLowerCase(); // "image" | "audio" | "video"
+      setPreviewUrl(url);
+      setPreviewType(type);
+    } else {
+      setPreviewUrl(null);
+      setPreviewType(null);
     }
   };
 
@@ -125,7 +107,15 @@ export default function Home() {
           <button
             key={t}
               className={`tab-btn ${tab === t ? 'active' : ''}`}
-              onClick={() => { setTab(t); setResult(null); setFile(null); setText(""); setTextWarning(null); }}
+              onClick={() => {
+                setTab(t);
+                setResult(null);
+                setFile(null);
+                setText("");
+                setTextWarning(null);
+                setPreviewUrl(null);
+                setPreviewType(null);
+              }}
           >
             {t}
           </button>
@@ -147,11 +137,31 @@ export default function Home() {
             <div className="scanner-display">
               <div className="scanner-animation"></div>
               <div className="file-preview">
-        {tab === "Text" ? (
+                {tab === "Text" ? (
                   <>
                     <i className="fas fa-keyboard"></i>
                     <span>ENTER TEXT TO ANALYZE</span>
                   </>
+                ) : previewUrl && previewType === tab.toLowerCase() ? (
+                  previewType === "image" ? (
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      style={{ display: 'block', maxWidth: '100%', maxHeight: '100%' }}
+                    />
+                  ) : previewType === "audio" ? (
+                    <audio
+                      src={previewUrl}
+                      controls
+                      style={{ display: 'block', width: '100%' }}
+                    />
+                  ) : (
+                    <video
+                      src={previewUrl}
+                      controls
+                      style={{ display: 'block', maxWidth: '100%', maxHeight: '100%' }}
+                    />
+                  )
                 ) : tab === "Image" ? (
                   <>
                     <i className="fas fa-image"></i>
@@ -209,6 +219,11 @@ export default function Home() {
                       <i className={`fas fa-${tab === "Image" ? "image" : tab === "Audio" ? "microphone" : "video"}`}></i>
                       <span>CLICK TO UPLOAD {tab.toUpperCase()}</span>
                     </div>
+                  </div>
+                  <div style={{ marginTop: '0.5rem', fontSize: '0.8rem', opacity: 0.8 }}>
+                    {tab === "Image" && "Images: JPG/PNG, ~10MB or smaller recommended."}
+                    {tab === "Audio" && "Audio: WAV/MP3/FLAC, short clips work best."}
+                    {tab === "Video" && "Video: MP4 (H.264) recommended, short clips (≤2 minutes)."}
                   </div>
                   <button 
                     type="submit" 

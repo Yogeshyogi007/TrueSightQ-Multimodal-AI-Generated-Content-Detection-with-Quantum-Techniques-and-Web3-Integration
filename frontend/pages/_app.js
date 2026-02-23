@@ -28,6 +28,7 @@ export default function App({ Component, pageProps }) {
     }
 
     ensureLink(initial)
+    document.documentElement.setAttribute('data-theme', initial)
   }, [])
 
   const toggleTheme = () => {
@@ -35,6 +36,7 @@ export default function App({ Component, pageProps }) {
     setTheme(next)
     if (typeof window !== 'undefined') {
       localStorage.setItem('ai-detector-theme', next)
+      document.documentElement.setAttribute('data-theme', next)
       const id = 'theme-link-dark'
       let link = document.getElementById(id)
       if (next === 'dark') {
