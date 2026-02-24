@@ -12,12 +12,14 @@ export default function Home() {
   const [text, setText] = useState("");
   const [scanning, setScanning] = useState(false);
   const [textWarning, setTextWarning] = useState(null);
+  const [fileWarning, setFileWarning] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [previewType, setPreviewType] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setTextWarning(null);
+    setFileWarning(null);
 
     if (tab === "Text") {
       const words = text.trim().split(/\s+/).filter(Boolean);
@@ -25,6 +27,9 @@ export default function Home() {
         setTextWarning(`Please enter at least ${MIN_TEXT_WORDS} words for accurate analysis. (Currently: ${words.length} words)`);
         return;
       }
+    } else {
+      if (!file) return;
+      if (fileWarning) return;
     }
 
     setLoading(true);
@@ -57,8 +62,26 @@ export default function Home() {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    setFile(selectedFile);
+    setFileWarning(null);
 
+    const expectedPrefix =
+      tab === "Image" ? "image/" :
+      tab === "Audio" ? "audio/" :
+      tab === "Video" ? "video/" :
+      null;
+
+    if (selectedFile && expectedPrefix && selectedFile.type && !selectedFile.type.startsWith(expectedPrefix)) {
+      setFile(null);
+      setPreviewUrl(null);
+      setPreviewType(null);
+      setResult(null);
+      setFileWarning("Please upload a valid file type.");
+      // allow selecting the same file again
+      e.target.value = "";
+      return;
+    }
+
+    setFile(selectedFile);
     if (selectedFile) {
       // Use a blob URL for preview and track the modality
       const url = URL.createObjectURL(selectedFile);
@@ -113,6 +136,7 @@ export default function Home() {
                 setFile(null);
                 setText("");
                 setTextWarning(null);
+                setFileWarning(null);
                 setPreviewUrl(null);
                 setPreviewType(null);
               }}
@@ -225,10 +249,15 @@ export default function Home() {
                     {tab === "Audio" && "Audio: WAV/MP3/FLAC, short clips work best."}
                     {tab === "Video" && "Video: MP4 (H.264) recommended, short clips (≤2 minutes)."}
                   </div>
+                  {fileWarning && (
+                    <div className="text-warning" role="alert">
+                      {fileWarning}
+                    </div>
+                  )}
                   <button 
                     type="submit" 
                     className="cyber-btn analyze-btn" 
-                    disabled={loading || !file}
+                    disabled={loading || !file || !!fileWarning}
                     onClick={startScanAnimation}
                   >
                     {loading ? <div className="loading"></div> : <i className="fas fa-search"></i>}
