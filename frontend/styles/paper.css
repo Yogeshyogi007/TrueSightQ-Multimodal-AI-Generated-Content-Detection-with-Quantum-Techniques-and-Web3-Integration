@@ -150,7 +150,7 @@ body {
   background: rgba(248, 249, 250, 0.8);
   border: 2px solid var(--matrix-blue);
   border-radius: 5px;
-  padding: 2rem;
+  padding: 1.5rem;
   box-shadow: 0 0 20px rgba(0, 119, 204, 0.2);
   transition: all 0.3s ease;
 }
@@ -202,7 +202,8 @@ body {
 .scanner-display {
   position: relative;
   width: 100%;
-  height: 340px;
+  /* Fit better on shorter viewports while keeping layout consistent */
+  height: clamp(240px, 40vh, 300px);
   background-color: rgba(248, 249, 250, 0.7);
   border: 2px dashed var(--matrix-blue);
   border-radius: 5px;
