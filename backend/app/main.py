@@ -149,14 +149,16 @@ def detect_image(file: UploadFile = File(...)):
                 final_conf = heuristic_confidence
                 method = "heuristic_fallback"
     
-    # Map internal label to user-friendly verdict
-    if final_result == "ai":
+    # Cap confidence at 95% for reliability
+    final_conf = min(0.95, final_conf)
+
+    # Map internal label to user-friendly verdict with a small explicit Uncertain band
+    if final_conf < 0.55:
+        user_verdict = "Uncertain Image"
+    elif final_result == "ai":
         user_verdict = "AI-Generated Image"
     else:
         user_verdict = "Real Image"
-    
-    # Cap confidence at 95% for reliability
-    final_conf = min(0.95, final_conf)
     
     print(f"Image detection - Heuristic: ({heuristic_label}, {heuristic_confidence:.2f}), PyTorch: ({pytorch_label}, {pytorch_confidence:.2f}), Final: ({final_result}, {final_conf:.2f}), Method: {method}")
     
@@ -170,10 +172,12 @@ def detect_audio(file: UploadFile = File(...)):
     # Map internal label to user-friendly verdict
     if result["verdict"] == "AI-Generated":
         user_verdict = "AI-Generated Audio"
-    elif result["verdict"] == "Human-Generated":
-        user_verdict = "Human-Generated Audio"
+    elif result["verdict"] in ["Real-Human Audio", "Human-Generated"]:
+        user_verdict = "Real-Human Audio"
+    elif result["verdict"] == "Uncertain Audio":
+        user_verdict = "Uncertain Audio"
     else:
-        user_verdict = result["verdict"]  # Keep "Uncertain", "Inconclusive", "Error"
+        user_verdict = result["verdict"]  # Keep "Inconclusive", "Error", etc.
     
     return DetectionResult(
         verdict=user_verdict, 
@@ -190,6 +194,8 @@ def detect_video(file: UploadFile = File(...)):
         user_verdict = "AI-Generated Video"
     elif verdict == "real":
         user_verdict = "Real Video"
+    elif verdict == "uncertain":
+        user_verdict = "Uncertain Video"
     else:
         user_verdict = verdict  # fallback for unknown
     # Optionally, you can log or return the message for debugging

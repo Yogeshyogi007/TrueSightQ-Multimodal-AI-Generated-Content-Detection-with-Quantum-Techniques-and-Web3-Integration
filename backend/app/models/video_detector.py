@@ -155,15 +155,20 @@ class VideoAIDetector:
         else:
             # If no clear majority, use the class with higher average confidence
             # but be more conservative about the decision
-            if ai_avg_conf > real_avg_conf and ai_avg_conf > 0.7:  # Increased threshold from 0.6
-                confidence = min(0.75, ai_avg_conf * 0.8)  # Further reduced confidence for uncertain AI cases
+            if ai_avg_conf > real_avg_conf and ai_avg_conf > 0.6:
+                confidence = min(0.8, ai_avg_conf * 0.85)
                 return "ai", confidence, smoothed_results, f"Uncertain - AI higher avg conf: {ai_avg_conf:.2f}"
-            elif real_avg_conf > ai_avg_conf and real_avg_conf > 0.6:  # Kept same for real
-                confidence = min(0.8, real_avg_conf * 0.85)  # Same confidence for uncertain real cases
+            elif real_avg_conf > ai_avg_conf and real_avg_conf > 0.55:
+                confidence = min(0.85, real_avg_conf * 0.9)
                 return "real", confidence, smoothed_results, f"Uncertain - Real higher avg conf: {real_avg_conf:.2f}"
             else:
-                # If both are below threshold, default to real with low confidence
-                return "real", 0.55, smoothed_results, f"Low confidence - AI: {ai_avg_conf:.2f}, Real: {real_avg_conf:.2f}"
+                # Only mark uncertain when both sides are truly weak
+                if max(ai_avg_conf, real_avg_conf) < 0.55:
+                    return "uncertain", 0.55, smoothed_results, f"Low confidence - AI: {ai_avg_conf:.2f}, Real: {real_avg_conf:.2f}"
+                # Otherwise, pick the stronger side with low confidence
+                if ai_avg_conf > real_avg_conf:
+                    return "ai", 0.6, smoothed_results, f"Borderline - AI slightly higher avg conf: {ai_avg_conf:.2f}"
+                return "real", 0.6, smoothed_results, f"Borderline - Real slightly higher avg conf: {real_avg_conf:.2f}"
 
     def detect_video(self, video_bytes):
         import time
@@ -255,12 +260,12 @@ class VideoAIDetector:
         final_verdict, final_confidence, frame_results, message = self._final_aggregation(smoothed_results)
         
         # Final safety check: be more conservative about AI detection
-        if final_verdict == "ai" and final_confidence < 0.75:
-            # If AI detection confidence is not high enough, default to real
-            final_verdict = "real"
-            final_confidence = 0.65
-            message += " - AI confidence too low, defaulting to real"
-            print(f"Safety check: AI confidence {final_confidence:.2f} too low, defaulting to real")
+        if final_verdict == "ai" and final_confidence < 0.65:
+            # If AI detection confidence is not high enough, mark as uncertain
+            final_verdict = "uncertain"
+            final_confidence = 0.55
+            message += " - AI confidence too low, marking as uncertain"
+            print(f"Safety check: AI confidence {final_confidence:.2f} too low, marking as uncertain")
         
         # Performance measurement
         end_time = time.time()

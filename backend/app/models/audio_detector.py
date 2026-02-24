@@ -18,9 +18,9 @@ class AudioAIDetector:
         self.n_mels = 128
         self.n_mfcc = 13
         
-        # Detection thresholds
-        self.ai_threshold = 0.6
-        self.real_threshold = 0.6
+        # Detection thresholds (narrow Uncertain band)
+        self.ai_threshold = 0.55
+        self.real_threshold = 0.55
         
         # Initialize anomaly detection
         self.isolation_forest = IsolationForest(contamination=0.1, random_state=42)
@@ -299,16 +299,19 @@ class AudioAIDetector:
             # Calculate AI score
             ai_score = self._ensemble_scoring(all_features)
             
-            # Determine verdict
-            if ai_score > self.ai_threshold:
+            # Determine verdict with an explicit Uncertain band
+            low_real = 1 - self.real_threshold
+            if ai_score >= self.ai_threshold:
                 verdict = "AI-Generated"
                 confidence = min(0.99, 0.7 + (ai_score - self.ai_threshold) * 2)
-            elif ai_score < (1 - self.real_threshold):
+            elif ai_score <= low_real:
                 verdict = "Real-Human Audio"
-                confidence = min(0.99, 0.7 + ((1 - self.real_threshold) - ai_score) * 2)
+                confidence = min(0.99, 0.7 + (low_real - ai_score) * 2)
             else:
-                verdict = "Real-Human Audio"
-                confidence = 1 - abs(ai_score - 0.5) * 2
+                verdict = "Uncertain Audio"
+                # Keep uncertainty confidence in a narrow, modest band
+                # Centered around ai_score ~ 0.5
+                confidence = 0.4 + (1 - abs(ai_score - 0.5) * 2) * 0.2
             
             return {
                 "verdict": verdict,
