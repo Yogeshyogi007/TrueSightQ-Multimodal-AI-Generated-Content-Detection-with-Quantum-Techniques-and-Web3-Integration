@@ -76,7 +76,13 @@ class QuillBotLevelAIDetector:
         return prob  # Closer to 1 = AI, closer to 0 = human
 
     def calculate_perplexity(self, text):
-        encodings = self.gpt_tokenizer(text, return_tensors="pt")
+        # Limit sequence length so GPT-2 position embeddings stay in range
+        encodings = self.gpt_tokenizer(
+            text,
+            return_tensors="pt",
+            truncation=True,
+            max_length=512,
+        )
         input_ids = encodings.input_ids
         target_ids = input_ids.clone()
         with torch.no_grad():
@@ -206,8 +212,13 @@ class QuillBotLevelAIDetector:
         return min(1, len(entities) / max(1, len(words) / 20))  # Normalize: 1 if >5% of words are entities
 
     def is_ai_generated(self, text, threshold=0.6):
-        if len(text.strip()) < 50:
+        text = text.strip()
+        if len(text) < 50:
             return {"verdict": "Inconclusive", "confidence": 0.5, "score": 0.5}
+        # Hard cap very long inputs to keep the detector stable and fast
+        max_chars = 4000
+        if len(text) > max_chars:
+            text = text[:max_chars]
         detector_prob = self.openai_detector_score(text)
         metrics = {
             'openai_detector_prob': detector_prob,

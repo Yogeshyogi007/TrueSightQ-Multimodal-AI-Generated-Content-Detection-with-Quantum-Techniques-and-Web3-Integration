@@ -27,6 +27,11 @@ export default function Home() {
         setTextWarning(`Please enter at least ${MIN_TEXT_WORDS} words for accurate analysis. (Currently: ${words.length} words)`);
         return;
       }
+      // Hard-cap text length before sending to backend to avoid network / OOM issues
+      const maxChars = 4000;
+      if (text.length > maxChars) {
+        setTextWarning(`Input too long. Only the first ${maxChars} characters will be analyzed.`);
+      }
     } else {
       if (!file) return;
       if (fileWarning) return;
@@ -38,18 +43,23 @@ export default function Home() {
     
     let res;
     try {
-    if (tab === "Text") {
-        res = await axios.post('http://localhost:8000/detect/text', 
-          new URLSearchParams({text}), 
-          {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+      if (tab === "Text") {
+        const maxChars = 4000;
+        const payloadText = text.length > maxChars ? text.slice(0, maxChars) : text;
+        res = await axios.post(
+          'http://localhost:8000/detect/text',
+          new URLSearchParams({ text: payloadText }),
+          { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
         );
-    } else {
-      const formData = new FormData();
+      } else {
+        const formData = new FormData();
         formData.append('file', file);
-        res = await axios.post(`http://localhost:8000/detect/${tab.toLowerCase()}`, formData, 
-          {headers: {'Content-Type': 'multipart/form-data'}}
+        res = await axios.post(
+          `http://localhost:8000/detect/${tab.toLowerCase()}`,
+          formData,
+          { headers: { 'Content-Type': 'multipart/form-data' } }
         );
-    }
+      }
     setResult(res.data);
     } catch (error) {
       console.error('Error:', error);
