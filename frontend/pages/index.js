@@ -104,6 +104,16 @@ export default function Home() {
     }
   };
 
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (!e.dataTransfer || !e.dataTransfer.files || !e.dataTransfer.files.length) return;
+    handleFileChange({ target: { files: e.dataTransfer.files } });
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
   const startScanAnimation = () => {
     const scannerAnimation = document.querySelector('.scanner-animation');
     if (scannerAnimation) {
@@ -242,7 +252,7 @@ export default function Home() {
                 </form>
               ) : (
                 <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-                  <div className="file-upload">
+                  <div className="file-upload" onDragOver={handleDragOver} onDrop={handleDrop}>
                     <input
                       type="file"
                       accept={tab === "Image" ? 'image/*' : tab === "Audio" ? 'audio/*' : 'video/*'}
