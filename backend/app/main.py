@@ -152,10 +152,8 @@ def detect_image(file: UploadFile = File(...)):
     # Cap confidence at 95% for reliability
     final_conf = min(0.95, final_conf)
 
-    # Map internal label to user-friendly verdict with a small explicit Uncertain band
-    if final_conf < 0.55:
-        user_verdict = "Uncertain Image"
-    elif final_result == "ai":
+    # Always map to a distinct AI vs Real verdict
+    if final_result == "ai":
         user_verdict = "AI-Generated Image"
     else:
         user_verdict = "Real Image"
@@ -169,13 +167,11 @@ def detect_audio(file: UploadFile = File(...)):
     audio_bytes = file.file.read()
     result = audio_detector.detect_audio(audio_bytes)
     
-    # Map internal label to user-friendly verdict
+    # Map internal label to user-friendly verdict (no Uncertain)
     if result["verdict"] == "AI-Generated":
         user_verdict = "AI-Generated Audio"
     elif result["verdict"] in ["Real-Human Audio", "Human-Generated"]:
         user_verdict = "Real-Human Audio"
-    elif result["verdict"] == "Uncertain Audio":
-        user_verdict = "Uncertain Audio"
     else:
         user_verdict = result["verdict"]  # Keep "Inconclusive", "Error", etc.
     
@@ -189,13 +185,11 @@ def detect_audio(file: UploadFile = File(...)):
 def detect_video(file: UploadFile = File(...)):
     video_bytes = file.file.read()
     verdict, confidence, frame_results, message = video_detector.detect_video(video_bytes)
-    # Map internal label to user-friendly verdict
+    # Map internal label to user-friendly verdict (no Uncertain)
     if verdict == "ai":
         user_verdict = "AI-Generated Video"
     elif verdict == "real":
         user_verdict = "Real Video"
-    elif verdict == "uncertain":
-        user_verdict = "Uncertain Video"
     else:
         user_verdict = verdict  # fallback for unknown
     # Optionally, you can log or return the message for debugging

@@ -299,7 +299,7 @@ class AudioAIDetector:
             # Calculate AI score
             ai_score = self._ensemble_scoring(all_features)
             
-            # Determine verdict with an explicit Uncertain band
+            # Determine verdict – always return AI or Real (no Uncertain verdict)
             low_real = 1 - self.real_threshold
             if ai_score >= self.ai_threshold:
                 verdict = "AI-Generated"
@@ -308,10 +308,9 @@ class AudioAIDetector:
                 verdict = "Real-Human Audio"
                 confidence = min(0.99, 0.7 + (low_real - ai_score) * 2)
             else:
-                verdict = "Uncertain Audio"
-                # Keep uncertainty confidence in a narrow, modest band
-                # Centered around ai_score ~ 0.5
-                confidence = 0.4 + (1 - abs(ai_score - 0.5) * 2) * 0.2
+                # Borderline range – default to Real but with lower confidence
+                verdict = "Real-Human Audio"
+                confidence = 0.5 + (0.5 - abs(ai_score - 0.5)) * 0.4
             
             return {
                 "verdict": verdict,

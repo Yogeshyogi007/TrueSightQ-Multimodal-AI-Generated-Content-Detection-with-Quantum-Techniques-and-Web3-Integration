@@ -153,22 +153,12 @@ class VideoAIDetector:
             confidence = min(0.85, (real_prop + real_avg_conf) / 2)  # Reduced max confidence
             return "real", confidence, smoothed_results, f"Real frames: {real_prop:.1%}, avg conf: {real_avg_conf:.2f}"
         else:
-            # If no clear majority, use the class with higher average confidence
-            # but be more conservative about the decision
-            if ai_avg_conf > real_avg_conf and ai_avg_conf > 0.6:
-                confidence = min(0.8, ai_avg_conf * 0.85)
-                return "ai", confidence, smoothed_results, f"Uncertain - AI higher avg conf: {ai_avg_conf:.2f}"
-            elif real_avg_conf > ai_avg_conf and real_avg_conf > 0.55:
-                confidence = min(0.85, real_avg_conf * 0.9)
-                return "real", confidence, smoothed_results, f"Uncertain - Real higher avg conf: {real_avg_conf:.2f}"
+            # If no clear majority, always return the side with higher average confidence
+            # and mark it with a modest confidence
+            if ai_avg_conf >= real_avg_conf:
+                return "ai", max(0.55, min(0.75, ai_avg_conf)), smoothed_results, f"Borderline - AI higher avg conf: {ai_avg_conf:.2f}"
             else:
-                # Only mark uncertain when both sides are truly weak
-                if max(ai_avg_conf, real_avg_conf) < 0.55:
-                    return "uncertain", 0.55, smoothed_results, f"Low confidence - AI: {ai_avg_conf:.2f}, Real: {real_avg_conf:.2f}"
-                # Otherwise, pick the stronger side with low confidence
-                if ai_avg_conf > real_avg_conf:
-                    return "ai", 0.6, smoothed_results, f"Borderline - AI slightly higher avg conf: {ai_avg_conf:.2f}"
-                return "real", 0.6, smoothed_results, f"Borderline - Real slightly higher avg conf: {real_avg_conf:.2f}"
+                return "real", max(0.55, min(0.8, real_avg_conf)), smoothed_results, f"Borderline - Real higher avg conf: {real_avg_conf:.2f}"
 
     def detect_video(self, video_bytes):
         import time

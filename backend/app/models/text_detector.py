@@ -233,18 +233,15 @@ class QuillBotLevelAIDetector:
             'sentence_variety': self.sentence_structure_variety(text),
             'named_entity_count': self.named_entity_count(text)
         }
-        # Ensemble logic with explicit Uncertain band
+        # Ensemble logic – always return a distinct AI vs Human verdict
         ai_score = 0.4 * detector_prob + 0.3 * metrics['ai_patterns'] + 0.3 * (1 - metrics['human_patterns'])
-        # High-confidence AI / Human, small explicit Uncertain region
+        # Slightly conservative threshold: >=0.6 → AI, otherwise Human
         if ai_score >= 0.6:
             verdict = "AI-Generated"
             confidence = round(ai_score, 4)
-        elif ai_score <= 0.4:
+        else:
             verdict = "Human-Written"
             confidence = round(1 - ai_score, 4)
-        else:
-            verdict = "Uncertain"
-            confidence = round(1 - abs(ai_score - 0.5) * 2, 4)
         return {
             "verdict": verdict,
             "confidence": confidence,
